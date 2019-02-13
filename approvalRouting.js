@@ -6,7 +6,6 @@ function setApprovalRouting()
 	if(has_discount || not_base_price)
 	{
 		nlapiSetFieldValue('orderstatus', 'A');
-		sendEmailToApprovers();
 	}
 }
 
@@ -60,23 +59,38 @@ function setApprovers(type, form)
 	}
 }
 
-function sendEmailToApprovers()
+function sendEmailToApprovers(type)
 {
-	var email_tpl = 'custscript1';
-	var id_email_tpl = nlapiGetContext().getSetting('SCRIPT', email_tpl);
-	var emailMerger = emailMerger = nlapiCreateEmailMerger(id_email_tpl);;
-	var context = nlapiGetContext();
-	var user = context.getUser();
-	var merge_res = emailMerger.merge();
+	if(type == 'create')
+	{
+		var email_tpl = 'custscript1';
+		var id_email_tpl = nlapiGetContext().getSetting('SCRIPT', email_tpl);
+		var emailMerger = nlapiCreateEmailMerger(id_email_tpl);
+		var context = nlapiGetContext();
+		var user = context.getUser();
+		var tran_id = nlapiGetRecordId();
 
-	nlapiSendEmail(user, getApprovers(), merge_res.getSubject() , merge_res.getBody());
+		emailMerger.setTransaction(tran_id);
+
+		var merge_res = emailMerger.merge();
+
+		nlapiSendEmail(user, getApprovers(), merge_res.getSubject() , merge_res.getBody());
+	}
 }
 
 function getApprovers()
 {
-	var user_approvers = [-5, 291, 259];
+	var script_dep = nlapiLoadRecord('scriptdeployment', 482);
+	var user_approvers = script_dep.getFieldValues('audemployee');
+	var approvers_arr = [];
 
-	return user_approvers;
+	// push user_approvers value to an array as NetSuite is adding a special character into the object when using raw getFieldValues api
+	for(var j = 0; j < user_approvers.length; j++)
+	{
+		approvers_arr.push(user_approvers[j]);
+	}
+
+	return approvers_arr;
 }
 
 function loggers(_var, msg)

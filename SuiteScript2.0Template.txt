@@ -1,0 +1,27 @@
+/**
+	*@NScriptType UserEventScript
+	*@NApiVersion 2.x
+*/
+
+define(
+	[
+		'N/currentRecord'
+	]
+,	function
+	(
+		curRec
+	)
+{
+	/**
+	* Function definition to be triggered before record is loaded.
+	*
+	* @param {Object} scriptContext
+	* @param {Record} scriptContext.newRecord - New record
+	* @param {string} scriptContext.type - Trigger type
+	* @param {Form} scriptContext.form - Current form
+	* @Since 2015.2
+	*/
+	return {
+		
+	}
+});

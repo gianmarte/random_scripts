@@ -19,7 +19,7 @@ define(
 	)
 {
 
-	var _ = {
+	var approvalObj = {
 		setApprovers: function setApprovers(mode, form)
 		{
 			var cur_user = runtime.getCurrentUser();
@@ -162,15 +162,15 @@ define(
 	return {
 		beforeLoad: function setBeforeLoad(context)
 		{
-			_.setApprovers(context.type, context.form);
+			approvalObj.setApprovers(context.type, context.form);
 		}
 	,	beforeSubmit: function setBeforeSubmit(context)
 		{
-			_.setApprovalRouting(context.type, context.newRecord);
+			approvalObj.setApprovalRouting(context.type, context.newRecord);
 		}
 	,	afterSubmit: function(context)
 		{
-			_.sendEmailToApprovers(context.type);
+			approvalObj.sendEmailToApprovers(context.type);
 		}
 	}
 });
